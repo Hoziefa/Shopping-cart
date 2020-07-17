@@ -1,0 +1,516 @@
+/*=============================================
+//%=          GLOBAL-STYLES SECTION         =%//
+=============================================*/
+
+@import "./variables.scss";
+
+$primaryColor: #f09d51;
+$mainWhite: #fff;
+$mainBlack: #222;
+$mainGrey: #ececec;
+$mainSpacing: 0.1rem;
+$mainTransition: all 0.3s linear;
+
+:root {
+    font-size: 16px;
+
+    @media screen and (max-width: 600px) {
+        font-size: 10px;
+    }
+}
+
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    color: $mainBlack;
+    background: $mainWhite;
+    font-family: "Lato", sans-serif;
+
+    max-width: 100vw;
+    min-height: 100vh;
+    overflow: hidden auto;
+    font-size: 1rem;
+    -webkit-user-select: none;
+
+    &::-webkit-scrollbar {
+        width: 0.5vw;
+        background-color: #1e1e24;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: $primaryColor;
+        border-radius: 10px;
+    }
+}
+
+ul {
+    list-style-type: none;
+}
+
+h1 {
+    font-size: 3vmax;
+}
+
+h2,
+h3 {
+    text-transform: capitalize;
+}
+
+h2 {
+    font-size: 3rem;
+}
+
+p {
+    color: gray;
+    line-height: 1.6;
+    font-family: $helveticaNeue-font;
+
+    &::first-letter {
+        text-transform: uppercase;
+    }
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+input,
+button,
+textarea {
+    border: none;
+    background-color: transparent;
+    font-size: 1rem;
+}
+
+button,
+select,
+input[type="submit"] {
+    cursor: pointer;
+}
+
+input,
+textarea {
+    &::-webkit-input-placeholder {
+        transition: opacity 0.3s;
+        color: $grayPlaceholder-color;
+        text-transform: capitalize;
+        font-weight: 600;
+    }
+
+    &:focus::-webkit-input-placeholder {
+        opacity: 0;
+    }
+}
+
+textarea {
+    resize: none;
+}
+
+:focus {
+    outline: none !important;
+}
+
+.container {
+    width: 1170px;
+    width: 92%;
+    width: 90vw;
+    max-width: 100vw;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin: 0 auto;
+    position: relative;
+
+    @media (max-width: 476px) {
+        width: 100% !important;
+    }
+}
+
+%banner-btn {
+    padding: 1rem 3rem;
+    text-transform: uppercase;
+    letter-spacing: $mainSpacing;
+    font-size: 1.15rem;
+    font-weight: 600;
+    background: $primaryColor;
+    color: white; // $mainBlack
+    border: 3px solid $primaryColor;
+    transition: $mainTransition;
+    cursor: pointer;
+
+    &:hover {
+        background: transparent;
+        color: $primaryColor;
+    }
+}
+
+//%-*=====  End of GLOBAL STYLE SECTION  ======*-//
+
+/*=============================================
+//%=          --- Navbar SECTION         =%//
+=============================================*/
+.navbar {
+    position: sticky;
+    top: 0;
+    min-height: 8vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    background: rgb(231, 226, 221);
+    z-index: 1;
+
+    .navbar-center {
+        // width: 100%;
+        // max-width: 1170px;
+        // margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        // padding: 0 1.5rem;
+
+        .nav-icon {
+            font-size: 2rem;
+        }
+
+        .cart-btn {
+            position: relative;
+            cursor: pointer;
+
+            * {
+                pointer-events: none;
+            }
+
+            .nav-icon {
+                font-size: 2.5rem;
+            }
+
+            .cart-items {
+                position: absolute;
+                top: -2px;
+                right: -8px;
+                background: $primaryColor;
+                padding: 0 5px;
+                border-radius: 30%;
+                color: $mainWhite;
+                font-weight: 900;
+                font-size: 1.5rem;
+            }
+        }
+    }
+}
+//%-*=====  End of --- Navbar SECTION ======*-//
+
+/*=============================================
+//%=          --- Hero SECTION         =%//
+=============================================*/
+.hero {
+    min-height: calc(100vh - 8vh);
+    background: url("../images/hero-bcg.jpeg") center/cover no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .banner {
+        text-align: center;
+        background: rgba(255, 255, 255, 0.8);
+        display: inline-block;
+        padding: 2rem;
+
+        .banner-title {
+            font-size: 3.5vmax;
+            text-transform: uppercase;
+            letter-spacing: $mainSpacing;
+            margin-bottom: 3rem;
+            font-family: $introRustLine-font;
+        }
+
+        .banner-btn {
+            @extend %banner-btn;
+        }
+    }
+}
+//%-*=====  End of --- Hero SECTION ======*-//
+
+/*=============================================
+//%=          --- Products SECTION         =%//
+=============================================*/
+.products {
+    padding: 4rem 0;
+
+    .section-title h2 {
+        text-align: center;
+        margin-bottom: 5rem;
+        text-transform: capitalize;
+        letter-spacing: $mainSpacing;
+        font-family: $raleway-font;
+        font-weight: 900;
+        position: relative;
+
+        @media (max-width: 700px) {
+            &::before,
+            &::after {
+                display: none;
+            }
+        }
+
+        &::before,
+        &::after {
+            content: "";
+            width: 20%;
+            height: 15%;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: -1;
+            background-image: linear-gradient($primaryColor);
+        }
+
+        &::before {
+            left: 5.8%;
+            border-radius: 20px 0 0 20px;
+        }
+
+        &::after {
+            right: 5.8%;
+            border-radius: 0 20px 20px 0;
+        }
+
+        // width: max-content;
+        // margin: 0 auto 5rem;
+        // border-bottom: 5px inset transparent;
+        // border-image-source: linear-gradient(90deg, $primaryColor, $mainBlack);
+        // border-image-slice: 5%;
+        // border-radius: 50px;
+    }
+
+    .products-center {
+        // width: 90vw;
+        // margin: 0 auto;
+        // max-width: 100vw; // 1170px
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(25rem, 1fr)); // 250px
+        gap: 2rem 1.5rem;
+
+        .product {
+            .img-container {
+                position: relative;
+                overflow: hidden;
+
+                &:hover {
+                    .product-img {
+                        transform: scale(1.01);
+                    }
+                }
+
+                .product-img {
+                    display: block;
+                    max-width: 100%;
+                    height: auto;
+                    min-height: 12rem;
+                    transition: $mainTransition;
+                    border-radius: 15px;
+                    padding: 10px;
+                    background-color: transparent;
+                    border: 15px inset $primaryColor;
+                }
+
+                .bag-btn {
+                    position: absolute;
+                    top: 70%;
+                    right: 0;
+                    background: $primaryColor;
+                    border: none;
+                    text-transform: uppercase;
+                    padding: 0.85rem 0.95rem;
+                    letter-spacing: $mainSpacing;
+                    font-weight: bold;
+                    transition: $mainTransition;
+                    transform: translateX(101%);
+                    border-radius: 20px 0 0 20px;
+
+                    .fa-shopping-cart {
+                        margin-right: 0.5rem;
+                    }
+
+                    &:hover {
+                        color: $mainWhite;
+                    }
+                }
+
+                &:hover {
+                    .bag-btn {
+                        transform: translateX(0);
+                    }
+
+                    .product-img {
+                        opacity: 0.5;
+                    }
+                }
+            }
+
+            h3 {
+                text-transform: capitalize;
+                font-size: 1.55rem;
+                margin-top: 1rem;
+                letter-spacing: $mainSpacing;
+                text-align: center;
+                font-weight: 900;
+            }
+
+            h4 {
+                margin-top: 0.7rem;
+                letter-spacing: $mainSpacing;
+                color: $primaryColor;
+                text-align: center;
+                font-weight: 900;
+                font-size: 1.5rem;
+            }
+        }
+    }
+}
+//%-*=====  End of --- Products SECTION ======*-//
+
+/*=============================================
+//%=          --- Cart SECTION         =%//
+=============================================*/
+.cart-overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    transition: $mainTransition;
+    background: rgba(240, 157, 81, 0.5);
+    z-index: 2;
+    visibility: hidden;
+
+    .cart {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden auto;
+        z-index: 3;
+        background: rgb(231, 226, 221);
+        padding: 1.5rem;
+        transition: $mainTransition;
+        transform: translateX(100%);
+
+        .close-cart {
+            font-size: 1.7rem;
+            cursor: pointer;
+
+            i {
+                pointer-events: none;
+            }
+        }
+
+        h2 {
+            text-transform: capitalize;
+            text-align: center;
+            letter-spacing: $mainSpacing;
+            margin-bottom: 2rem;
+        }
+
+        //*---------- Cart Item -------------------- *//
+        .cart-content {
+            .cart-item {
+                display: grid;
+                align-items: center;
+                grid-template-columns: auto 1fr auto;
+                column-gap: 1.5rem;
+                margin: 1.5rem 0;
+
+                img {
+                    width: 75px;
+                    height: 75px;
+                    padding: 0.15rem;
+                    background-color: transparent;
+                    border: 2px solid $primaryColor;
+                    border-radius: 5px;
+                }
+
+                h4 {
+                    font-size: 1.25rem;
+                    text-transform: capitalize;
+                    letter-spacing: $mainSpacing;
+                }
+
+                h5 {
+                    margin: 0.5rem 0;
+                    letter-spacing: $mainSpacing;
+                    font-size: 1rem;
+                }
+
+                span.remove-item {
+                    color: #d21;
+                    cursor: pointer;
+                    font-size: 1rem;
+                    font-weight: 900;
+                }
+
+                p.item-amount {
+                    text-align: center;
+                    font-size: 1.15rem;
+                }
+
+                .fa-chevron-up,
+                .fa-chevron-down {
+                    color: $primaryColor;
+                    cursor: pointer;
+                }
+            }
+        }
+        //*---------- End of Cart Item -------------------- *//
+
+        .cart-footer {
+            margin-top: 2rem;
+            letter-spacing: $mainSpacing;
+            text-align: center;
+
+            h3 {
+                text-transform: capitalize;
+                margin-bottom: 1rem;
+            }
+
+            button {
+                @extend %banner-btn;
+            }
+        }
+
+        &.showCart {
+            transform: translateX(0);
+        }
+
+        @media screen and (min-width: 768px) {
+            width: 30vw;
+            min-width: 450px;
+        }
+    }
+
+    &.transparentBcg {
+        visibility: visible;
+    }
+}
+//%-*=====  End of --- Cart SECTION ======*-//
+
+footer.footer {
+    min-height: 10vh;
+    background-image: repeating-linear-gradient(150deg, $mainWhite, $primaryColor, $mainWhite);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    p {
+        color: $mainWhite;
+        font-size: 3vmin;
+        text-transform: capitalize;
+    }
+}
