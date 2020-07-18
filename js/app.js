@@ -16,7 +16,7 @@ let carts = [];
 
 class Products {
     async getProducts() {
-        this.items = await fetch("./products.json")
+        this.items = await fetch("../json/products.json")
             .then(res => res.json())
             .then(({ items }) =>
                 items.map(({ sys: { id }, fields: { title, price, image: { fields: { file: { url } } } } }) => ({
