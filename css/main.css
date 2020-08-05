@@ -3,6 +3,7 @@
 @font-face {
   font-family: "Intro Rust G Base 2 Line";
   src: url(../fonts/IntroRustG-Base2Line.otf);
+  format: "truetype";
 
   font-family: "Raleway";
   src: url(../fonts/Raleway-Medium.ttf);

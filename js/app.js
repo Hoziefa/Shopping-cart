@@ -12,20 +12,147 @@ const elements = {
     cartsContainer: document.querySelector(".cart-overlay .cart .cart-content"),
 };
 
+const state = {};
+
 let carts = [];
 
 class Products {
     async getProducts() {
-        this.items = await fetch("../json/products.json")
-            .then(res => res.json())
-            .then(({ items }) =>
-                items.map(({ sys: { id }, fields: { title, price, image: { fields: { file: { url } } } } }) => ({
-                    id,
-                    title,
-                    price,
-                    url,
-                })),
-            );
+        this.items = [
+            {
+                sys: {
+                    id: "1",
+                },
+                fields: {
+                    title: "queen panel bed",
+                    price: 10.99,
+                    image: {
+                        fields: {
+                            file: {
+                                url: "./images/product-one.jpeg",
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                sys: {
+                    id: "2",
+                },
+                fields: {
+                    title: "king panel bed",
+                    price: 12.99,
+                    image: {
+                        fields: {
+                            file: {
+                                url: "./images/product-two.jpeg",
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                sys: {
+                    id: "3",
+                },
+                fields: {
+                    title: "single panel bed",
+                    price: 12.99,
+                    image: {
+                        fields: {
+                            file: {
+                                url: "./images/product-three.jpeg",
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                sys: {
+                    id: "4",
+                },
+                fields: {
+                    title: "twin panel bed",
+                    price: 22.99,
+                    image: {
+                        fields: {
+                            file: {
+                                url: "./images/product-four.jpeg",
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                sys: {
+                    id: "5",
+                },
+                fields: {
+                    title: "fridge",
+                    price: 88.99,
+                    image: {
+                        fields: {
+                            file: {
+                                url: "./images/product-five.jpeg",
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                sys: {
+                    id: "6",
+                },
+                fields: {
+                    title: "dresser",
+                    price: 32.99,
+                    image: {
+                        fields: {
+                            file: {
+                                url: "./images/product-six.jpeg",
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                sys: {
+                    id: "7",
+                },
+                fields: {
+                    title: "couch",
+                    price: 45.99,
+                    image: {
+                        fields: {
+                            file: {
+                                url: "./images/product-seven.jpeg",
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                sys: {
+                    id: "8",
+                },
+                fields: {
+                    title: "table",
+                    price: 33.99,
+                    image: {
+                        fields: {
+                            file: {
+                                url: "./images/product-eight.jpeg",
+                            },
+                        },
+                    },
+                },
+            },
+        ].map(({ sys: { id }, fields: { title, price, image: { fields: { file: { url } } } } }) => ({
+            id,
+            title,
+            price,
+            url,
+        }));
     }
 }
 
@@ -72,9 +199,9 @@ class UI {
     }
 
     calcTotalCartsPrice() {
-        let totalPrices = carts.reduce((acc, { price, amount }) => price * amount + acc, 0);
+        let totalPrices = carts.reduce((acc, { price, amount }) => price * amount + acc, 0).toFixed(2);
 
-        elements.totalCartsPrices.textContent = totalPrices.toFixed(2);
+        elements.totalCartsPrices.textContent = totalPrices;
 
         elements.totalCarts.textContent = carts.reduce((acc, { amount }) => acc + amount, 0);
     }
@@ -111,8 +238,6 @@ class Storage {
         state.UI.calcTotalCartsPrice();
     }
 }
-
-const state = {};
 
 elements.bannerShopBtn.addEventListener("click", _ => {
     document.querySelector(".products").scrollIntoView({ behavior: "smooth" });
@@ -189,16 +314,14 @@ elements.cart.addEventListener("click", ({ target }) => {
     if (target.matches(".remove-item")) return state.UI.removeCart(id);
 
     if (target.matches(".fa-chevron-up")) {
-        cart.amount++;
-        domAmount.textContent = cart.amount;
+        domAmount.textContent = ++cart.amount;
 
         state.storage.addCartsToLocal(carts);
         state.UI.calcTotalCartsPrice();
     }
 
     if (target.matches(".fa-chevron-down")) {
-        cart.amount--;
-        domAmount.textContent = cart.amount;
+        domAmount.textContent = --cart.amount;
 
         cart.amount <= 0 && state.UI.removeCart(id);
 
