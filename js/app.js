@@ -290,7 +290,7 @@ document.addEventListener("DOMContentLoaded", async _ => {
 elements.productsContainer.addEventListener("click", async ({ target }) => {
     if (!target.matches("button[data-id]")) return;
 
-    const { carts, products: { products } = {}, UI, storage } = state;
+    const { carts, UI, storage, products: { products } = {} } = state;
 
     let { id: domProductID } = target.dataset;
 
