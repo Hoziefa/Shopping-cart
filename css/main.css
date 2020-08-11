@@ -485,7 +485,7 @@ textarea {
   margin-bottom: 1rem;
 }
 
-.cart-overlay .cart.showCart {
+.cart-overlay .cart.show-cart {
   -webkit-transform: translateX(0);
           transform: translateX(0);
 }
@@ -519,5 +519,34 @@ footer.footer p {
   color: #fff;
   font-size: 3vmin;
   text-transform: capitalize;
+}
+
+.message {
+  position: fixed;
+  top: 10vh;
+  left: 0;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  border-radius: 0 10px 10px 0;
+  z-index: 5;
+  background-color: #f09d51;
+  color: #fff;
+  padding: 0.65rem 1rem;
+  text-transform: capitalize;
+  -webkit-transform: translateX(-100%);
+          transform: translateX(-100%);
+  -webkit-transition: -webkit-transform 0.3s;
+  transition: -webkit-transform 0.3s;
+  transition: transform 0.3s;
+  transition: transform 0.3s, -webkit-transform 0.3s;
+  font-size: 1.05rem;
+  font-weight: bolder;
+  font-family: "Verdana Hand";
+}
+
+.message.show-message {
+  -webkit-transform: translateX(0);
+          transform: translateX(0);
 }
 /*# sourceMappingURL=main.css.map */

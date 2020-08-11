@@ -3,22 +3,23 @@ const elements = {
     cartBtn: document.querySelector(".navbar div.cart-btn"),
     totalCarts: document.querySelector(".navbar div.cart-btn .cart-items"),
     cartOverlay: document.querySelector(".cart-overlay"),
-    cart: document.querySelector(".cart-overlay .cart"),
+    domCart: document.querySelector(".cart-overlay .cart"),
     closeCart: document.querySelector(".cart-overlay .cart .close-cart"),
     clearCartBtn: document.querySelector(".cart-overlay .cart .clear-cart"),
     totalCartsPrices: document.querySelector(".cart .cart-total"),
 
     productsContainer: document.querySelector(".products .products-center"),
     cartsContainer: document.querySelector(".cart-overlay .cart .cart-content"),
+    domMessage: document.querySelector(".message"),
 };
 
-const state = {};
+const state = { products: null, UI: null, storage: null, carts: [] };
 
-let carts = [];
+const setState = (update = {}, prevState = state || {}) => Object.assign(prevState, update);
 
 class Products {
     async getProducts() {
-        this.items = [
+        this.products = [
             {
                 sys: {
                     id: "1",
@@ -199,25 +200,40 @@ class UI {
     }
 
     calcTotalCartsPrice() {
-        let totalPrices = carts.reduce((acc, { price, amount }) => price * amount + acc, 0).toFixed(2);
+        const { carts } = state;
 
-        elements.totalCartsPrices.textContent = totalPrices;
+        let totalPrices = carts.reduce((acc, { price, amount }) => price * amount + acc, 0);
+
+        elements.totalCartsPrices.textContent = totalPrices.toFixed(2);
 
         elements.totalCarts.textContent = carts.reduce((acc, { amount }) => acc + amount, 0);
     }
 
     removeCart(id) {
-        carts = carts.filter(({ id: cartID }) => cartID !== id);
+        const { storage, UI } = state;
+
+        setState({ carts: state.carts.filter(({ id: cartID }) => cartID !== id) });
 
         document.querySelector(`.cart #cart-${id}`)?.remove();
 
-        state.storage.addCartsToLocal(carts);
+        storage.addCartsToLocal(state.carts);
 
-        state.UI.calcTotalCartsPrice();
+        UI.calcTotalCartsPrice();
 
         const domProductAddBtn = document.querySelector(`button[data-id*="${id}"]`);
         domProductAddBtn.textContent = "";
         domProductAddBtn.insertAdjacentHTML("afterbegin", `<i class="fas fa-shopping-cart"></i> add to bag`);
+    }
+
+    timeout;
+    sweetAlert(message = "") {
+        elements.domMessage.textContent = message;
+
+        elements.domMessage.classList.add("show-message");
+
+        this.timeout && clearTimeout(this.timeout);
+
+        this.timeout = setTimeout(_ => elements.domMessage.classList.remove("show-message"), 1500);
     }
 }
 
@@ -227,15 +243,17 @@ class Storage {
     }
 
     getLocalCarts() {
-        carts = JSON.parse(localStorage.getItem("carts")) || [];
+        const { UI } = state;
 
-        carts.forEach(cart => {
-            state.UI.renderCart(cart);
+        setState({ carts: JSON.parse(localStorage.getItem("carts")) || [] });
+
+        state.carts.forEach(cart => {
+            UI.renderCart(cart);
 
             document.querySelector(`button[data-id*="${cart.id}"]`).textContent = "Cart in bag";
         });
 
-        state.UI.calcTotalCartsPrice();
+        UI.calcTotalCartsPrice();
     }
 }
 
@@ -244,7 +262,7 @@ elements.bannerShopBtn.addEventListener("click", _ => {
 });
 
 document.addEventListener("click", ({ target }) => {
-    const { cartBtn, closeCart, cartOverlay, cart } = elements;
+    const { cartBtn, closeCart, cartOverlay, domCart } = elements;
 
     const selectorsGroup = [
         `.${closeCart.classList[0]}`,
@@ -255,17 +273,16 @@ document.addEventListener("click", ({ target }) => {
     if (!target.matches(selectorsGroup.join())) return;
 
     cartOverlay.classList.toggle("transparentBcg");
-    cart.classList.toggle("showCart");
+
+    domCart.classList.toggle("show-cart");
 });
 
 document.addEventListener("DOMContentLoaded", async _ => {
-    if (!state.products) state.products = new Products();
-    if (!state.UI) state.UI = new UI();
-    if (!state.storage) state.storage = new Storage();
+    setState({ products: new Products(), UI: new UI(), storage: new Storage() });
 
     await state.products.getProducts();
 
-    state.products.items.forEach(state.UI.renderProduct);
+    state.products.products.forEach(state.UI.renderProduct);
 
     state.storage.getLocalCarts();
 });
@@ -273,33 +290,42 @@ document.addEventListener("DOMContentLoaded", async _ => {
 elements.productsContainer.addEventListener("click", async ({ target }) => {
     if (!target.matches("button[data-id]")) return;
 
+    const { carts, products: { products } = {}, UI, storage } = state;
+
     let { id: domProductID } = target.dataset;
 
-    let isCartPresent = carts.some(({ id }) => id === domProductID);
-    if (isCartPresent) return;
+    const product = products.find(({ id }) => id === domProductID);
 
-    const product = state.products.items.find(({ id }) => id === domProductID);
+    let isCartPresent = carts.some(({ id }) => id === domProductID);
+
+    if (isCartPresent) return UI.sweetAlert(`"${product.title}" Product is Already in the Bag!`);
+
     const newCart = { ...product, amount: 1 };
 
-    state.UI.renderCart(newCart);
+    UI.renderCart(newCart);
 
     carts.push(newCart);
 
-    state.storage.addCartsToLocal(carts);
+    storage.addCartsToLocal(carts);
 
-    state.UI.calcTotalCartsPrice();
+    UI.calcTotalCartsPrice();
+
+    UI.sweetAlert(`"${product.title}" Product added successfully`);
 
     target.textContent = "Cart in bag";
 
     elements.cartOverlay.classList.add("transparentBcg");
-    elements.cart.classList.add("showCart");
+
+    elements.domCart.classList.add("show-cart");
 });
 
-elements.cart.addEventListener("click", ({ target }) => {
+elements.domCart.addEventListener("click", ({ target }) => {
     if (target.matches(`.${elements.clearCartBtn.classList[0]}`)) {
         localStorage.clear();
         location.reload();
     }
+
+    const { carts, UI, storage } = state;
 
     let domCart = target.closest(".cart-item");
 
@@ -311,21 +337,29 @@ elements.cart.addEventListener("click", ({ target }) => {
 
     const cart = carts.find(({ id: cartID }) => cartID === id);
 
-    if (target.matches(".remove-item")) return state.UI.removeCart(id);
+    if (target.matches(".remove-item")) {
+        !UI.removeCart(id);
+        return UI.sweetAlert(`"${cart.title}" Deleted Successfully!`);
+    }
 
     if (target.matches(".fa-chevron-up")) {
         domAmount.textContent = ++cart.amount;
 
-        state.storage.addCartsToLocal(carts);
-        state.UI.calcTotalCartsPrice();
+        storage.addCartsToLocal(carts);
+
+        UI.calcTotalCartsPrice();
     }
 
     if (target.matches(".fa-chevron-down")) {
         domAmount.textContent = --cart.amount;
 
-        cart.amount <= 0 && state.UI.removeCart(id);
+        if (cart.amount <= 0) {
+            UI.removeCart(id);
+            return UI.sweetAlert(`"${cart.title}" Deleted Successfully!`);
+        }
 
-        state.storage.addCartsToLocal(carts);
-        state.UI.calcTotalCartsPrice();
+        storage.addCartsToLocal(carts);
+
+        UI.calcTotalCartsPrice();
     }
 });
