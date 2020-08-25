@@ -304,9 +304,9 @@ elements.productsContainer.addEventListener("click", async ({ target }) => {
 
     UI.renderCart(newCart);
 
-    carts.push(newCart);
+    setState({ carts: [...carts, newCart] });
 
-    storage.addCartsToLocal(carts);
+    storage.addCartsToLocal(state.carts);
 
     UI.calcTotalCartsPrice();
 
