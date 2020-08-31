@@ -15,7 +15,7 @@ const elements = {
 
 const state = { products: null, UI: null, storage: null, carts: [] };
 
-const setState = (update = {}, prevState = state || {}) => Object.assign(prevState, update);
+const setState = (newState = {}, prevState = state || {}) => Object.assign(prevState, newState);
 
 class Products {
     async getProducts() {
@@ -202,9 +202,9 @@ class UI {
     calcTotalCartsPrice() {
         const { carts } = state;
 
-        let totalPrices = carts.reduce((acc, { price, amount }) => price * amount + acc, 0);
+        let totalPrices = carts.reduce((acc, { price, amount }) => price * amount + acc, 0).toFixed(2);
 
-        elements.totalCartsPrices.textContent = totalPrices.toFixed(2);
+        elements.totalCartsPrices.textContent = totalPrices;
 
         elements.totalCarts.textContent = carts.reduce((acc, { amount }) => acc + amount, 0);
     }
@@ -233,7 +233,7 @@ class UI {
 
         this.timeout && clearTimeout(this.timeout);
 
-        this.timeout = setTimeout(_ => elements.domMessage.classList.remove("show-message"), 1500);
+        this.timeout = setTimeout(() => elements.domMessage.classList.remove("show-message"), 1500);
     }
 }
 
@@ -257,7 +257,7 @@ class Storage {
     }
 }
 
-elements.bannerShopBtn.addEventListener("click", _ => {
+elements.bannerShopBtn.addEventListener("click", () => {
     document.querySelector(".products").scrollIntoView({ behavior: "smooth" });
 });
 
@@ -277,7 +277,7 @@ document.addEventListener("click", ({ target }) => {
     domCart.classList.toggle("show-cart");
 });
 
-document.addEventListener("DOMContentLoaded", async _ => {
+document.addEventListener("DOMContentLoaded", async () => {
     setState({ products: new Products(), UI: new UI(), storage: new Storage() });
 
     await state.products.getProducts();
